@@ -11,7 +11,9 @@ The goal of this project is to build practical skills in:
 - host discovery
 - port scanning
 - service detection
-- output saving
+- verbose scanning
+- file-based target scanning
+- output saving in different formats
 - working with common Nmap options
 
 These labs are written in a simple step-by-step format inspired by hands-on learning platforms, but adapted for my own practice environment and GitHub portfolio.
@@ -41,6 +43,8 @@ Tools used in different labs may include:
 - `nmap`
 - `python3`
 - `nc` (netcat)
+- `grep`
+- `awk`
 
 ---
 
@@ -51,6 +55,8 @@ Tools used in different labs may include:
 | 01 | Discover a Local Web Service with Nmap | Basic localhost scanning |
 | 02 | Find an Open Port on Localhost | Full port scan with `-p-` |
 | 03 | Save Nmap Output to XML | XML output with `-oX` |
+| 04 | Scan Targets from a File | Reading targets with `-iL` |
+| 05 | Uncover the Secret Port | Verbose full-port scan with `-v` |
 
 ---
 
@@ -63,6 +69,7 @@ By working through these labs, I practice how to:
 - detect running services
 - scan specific ports
 - scan all ports
+- read targets from files
 - save results in different formats
 - document command-line work clearly
 
@@ -78,7 +85,11 @@ nmap-labs/
     │   └── README.md
     ├── 02-find-open-port/
     │   └── README.md
-    └── 03-save-nmap-output-to-xml/
+    ├── 03-save-nmap-output-to-xml/
+    │   └── README.md
+    ├── 04-scan-targets-from-file/
+    │   └── README.md
+    └── 05-uncover-the-secret-port/
         └── README.md
 ```
 
