@@ -13,6 +13,8 @@ The goal of this project is to build practical skills in:
 - service detection
 - verbose scanning
 - file-based target scanning
+- UDP scanning
+- OS detection
 - output saving in different formats
 - working with common Nmap options
 
@@ -45,6 +47,7 @@ Tools used in different labs may include:
 - `nc` (netcat)
 - `grep`
 - `awk`
+- `sed`
 
 ---
 
@@ -57,6 +60,8 @@ Tools used in different labs may include:
 | 03 | Save Nmap Output to XML | XML output with `-oX` |
 | 04 | Scan Targets from a File | Reading targets with `-iL` |
 | 05 | Uncover the Secret Port | Verbose full-port scan with `-v` |
+| 06 | Find an Open UDP Port | UDP scanning with `-sU` |
+| 07 | Identify Linux Server Version | OS detection with `-O` |
 
 ---
 
@@ -70,6 +75,8 @@ By working through these labs, I practice how to:
 - scan specific ports
 - scan all ports
 - read targets from files
+- perform UDP scans
+- detect operating systems
 - save results in different formats
 - document command-line work clearly
 
@@ -89,7 +96,11 @@ nmap-labs/
     │   └── README.md
     ├── 04-scan-targets-from-file/
     │   └── README.md
-    └── 05-uncover-the-secret-port/
+    ├── 05-uncover-the-secret-port/
+    │   └── README.md
+    ├── 06-find-open-udp-port/
+    │   └── README.md
+    └── 07-identify-linux-server-version/
         └── README.md
 ```
 
