@@ -125,6 +125,16 @@ Nmap detected that the port was open because the service was listening and accep
 | Nmap | A tool used for network scanning and service discovery |
 | `-p` | Nmap option used to scan a specific port |
 
+## Screenshots
+
+### Python HTTP Server Running
+
+![Python HTTP Server Running](screenshots/01-python-http-server.png)
+
+### Nmap Scan Results
+
+![Nmap Scan Results](screenshots/02-nmap-scan-results.png)
+
 ## What I Learned
 
 In this lab, I learned how to start a simple local HTTP server and use Nmap to detect it.
