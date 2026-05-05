@@ -1,201 +1,160 @@
-# Lab 07: Identify Linux Server Version
+# Lab 07: Identify Linux Server Version with Nmap
 
 ## Overview
 
-In this lab, you will use **Nmap** with OS detection to identify the operating system of `localhost`.
+In this lab, I used Nmap to identify service and version information on `localhost`.
 
-Your task is to run an Nmap scan with OS detection enabled, save the results to a file, and review the output to determine the system version. This type of scan is useful when you need to collect basic host information during reconnaissance or security assessment.
+The purpose of this lab was to practice Nmap version detection and understand how Nmap can collect more detailed information about running services.
 
-This lab helps you practice:
+This is useful in cybersecurity because service versions can help analysts identify outdated software, possible vulnerabilities, and misconfigurations.
 
-- using OS detection in Nmap
-- scanning `localhost`
-- saving scan output to a file
-- reviewing results to identify the operating system
-- working with a common Nmap detection option
+## Objective
 
----
+The goal of this lab was to:
 
-## Learning Objectives
+- Scan `localhost` with Nmap
+- Use service version detection
+- Identify running services
+- Understand the purpose of the `-sV` option
+- Learn why service version information is important in security analysis
 
-By the end of this lab, you should be able to:
+## Tools Used
 
-- use Nmap with `-O` for OS detection
-- scan `localhost` from the command line
-- save scan results to a text file
-- read Nmap output and identify OS details
-- understand when OS detection can be useful
-
----
-
-## Prerequisites
-
-Before starting, make sure you have:
-
-- Ubuntu, WSL, or another Linux environment
-- `nmap` installed
-- basic familiarity with terminal commands
-
-You can check with:
-
-```bash
-nmap --version
-```
-
----
+- Nmap
+- Python 3
+- Ubuntu / WSL terminal
 
 ## Scenario
 
-You are investigating a local machine and need to identify its operating system for basic system profiling.
+A service is running on the local machine.
 
-Your task is to scan `localhost` with OS detection enabled, save the output to a file named `target_os.txt`, and review the results to identify the detected Linux version.
+The task is to scan the system with Nmap and collect service version information. This simulates a basic reconnaissance task where a cybersecurity analyst or beginner pentester checks what services are running and what versions they may be using.
 
----
+## Commands Used
 
-## Step 1: Run an OS detection scan
+### 1. Start a Local HTTP Server
 
-Run:
-
-```bash
-sudo nmap -O localhost
-```
-
-### Questions
-
-- Why is sudo often needed for OS detection?
-- What does the `-O` option do?
-- What kind of details does Nmap try to identify?
-
----
-
-## Step 2: Save the scan output to a file
-
-Run:
+I started a simple HTTP server using Python 3:
 
 ```bash
-sudo nmap -O localhost > target_os.txt
+python3 -m http.server 8000
 ```
 
-This saves the scan output into `target_os.txt`.
+This command starts a local web service on port `8000`.
+
+Keep this terminal open while running the Nmap scan.
 
 ---
 
-## Step 3: View the saved file
+### 2. Open a Second Ubuntu Terminal
 
-Run:
-
-```bash
-cat target_os.txt
-```
-
-### Questions
-
-- Does the file exist?
-- Can you find any OS-related information in the output?
-- Does Nmap identify the system as Linux?
+Because the HTTP server must continue running, I opened a second Ubuntu terminal to run Nmap commands.
 
 ---
 
-## Tasks
+### 3. Run a Basic Nmap Scan
 
-Complete the following tasks:
-
-1. Run an Nmap scan against `localhost`
-2. Enable OS detection with `-O`
-3. Save the scan output to `target_os.txt`
-4. Review the saved file
-5. Identify the detected operating system
-
----
-
-## Expected Results
-
-You should observe:
-
-- `localhost` is up
-- Nmap performs OS detection
-- the results are saved in `target_os.txt`
-- the output may include Linux OS details
-
-Example output may look similar to:
-
-```
-Starting Nmap ...
-Nmap scan report for localhost (127.0.0.1)
-Host is up (0.000024s latency).
-OS details: Linux 5.4.0-42-generic
-```
-
-The exact kernel version or OS details may vary depending on your environment.
-
----
-
-## Notes
-
-The command:
-
-```bash
-sudo nmap -O localhost
-```
-
-means:
-
-- `sudo` = run with elevated privileges
-- `nmap` = run the network scanner
-- `-O` = enable OS detection
-- `localhost` = scan the local machine
-
-The command:
-
-```bash
-sudo nmap -O localhost > target_os.txt
-```
-
-runs the same scan, but saves the results into a file for later review.
-
-OS detection can be useful when you need to:
-
-- identify the operating system of a target host
-- collect host information during reconnaissance
-- document scan results for analysis or reporting
-
----
-
-## Key Terms
-
-- Nmap = a network scanning tool
-- OS detection = identifying the operating system of a target host
-- `-O` = Nmap option for OS detection
-- `localhost` = your own machine
-- scan output = the text result produced by the scan
-- kernel version = the version of the operating system kernel detected in the scan output
-
----
-
-## Hints
-
-- Use `sudo` when running OS detection scans
-- Use `-O` to enable operating system detection
-- Save the scan results before reviewing them
-- Use `cat target_os.txt` to inspect the output
-- Look for lines containing OS details
-
----
-
-## Extension Ideas
-
-After finishing this lab, try:
+In the second terminal, I scanned `localhost`:
 
 ```bash
 nmap localhost
-sudo nmap -O -v localhost
-sudo nmap -A localhost
 ```
 
-These commands help you compare:
-
-- a basic scan without OS detection
-- verbose OS detection
-- aggressive scanning with additional detection features
+This command shows open ports on the local machine.
 
 ---
+
+### 4. Run Service Version Detection
+
+To identify service and version information, I used:
+
+```bash
+nmap -sV localhost
+```
+
+The `-sV` option tells Nmap to try to detect the version of services running on open ports.
+
+---
+
+### 5. Run Version Detection on a Specific Port
+
+Because the Python HTTP server is running on port `8000`, I also scanned only that port:
+
+```bash
+nmap -sV -p 8000 localhost
+```
+
+Explanation:
+
+- `-sV` enables service version detection
+- `-p 8000` tells Nmap to scan only port `8000`
+- `localhost` is the target machine
+
+## Expected Result
+
+Nmap should show that port `8000/tcp` is open and running an HTTP service.
+
+Example result:
+
+```text
+PORT     STATE SERVICE VERSION
+8000/tcp open  http    SimpleHTTPServer
+```
+
+The exact service name or version may be different depending on the Python version and system configuration.
+
+## Explanation of the Result
+
+The result means that Nmap detected a service running on port `8000`.
+
+In this lab, the service was created by the Python HTTP server:
+
+```bash
+python3 -m http.server 8000
+```
+
+Using `-sV`, Nmap tried to identify more information about the service, not just whether the port was open.
+
+This is important because knowing the service and version can help security analysts check whether the software is outdated or vulnerable.
+
+## Screenshots
+
+### Nmap Service Version Detection
+
+![Nmap Service Version Detection](screenshots/01-service-version-detection.png)
+
+## Key Terms
+
+| Term | Meaning |
+|---|---|
+| Nmap | A tool used for network scanning and service discovery |
+| Service | A program running on a system and listening on a port |
+| Version detection | The process of identifying service software and version information |
+| `-sV` | Nmap option used to detect service versions |
+| `-p` | Nmap option used to scan a specific port |
+| Port | A communication endpoint used by a network service |
+| Open port | A port where a service is running and accepting connections |
+| HTTP | Hypertext Transfer Protocol, used for web communication |
+| `localhost` | The local machine being used |
+| `127.0.0.1` | Loopback IP address that points to the local machine |
+| Reconnaissance | The process of collecting information about a system or network |
+
+## What I Learned
+
+In this lab, I learned how to use Nmap service version detection with the `-sV` option.
+
+I also learned that an open port only shows that a service is running, but version detection can provide more details about what service may be running.
+
+This is important in cybersecurity because service version information can help identify outdated software and possible vulnerabilities.
+
+## Security Note
+
+This lab was performed only on `localhost`.
+
+Nmap scans should only be performed on systems that I own or have permission to test. Unauthorized scanning can be illegal and unethical.
+
+## Conclusion
+
+This lab helped me understand how Nmap can be used to identify service and version information.
+
+By starting a local HTTP server and scanning it with `nmap -sV`, I practiced collecting more detailed information about a running service.
