@@ -2,206 +2,194 @@
 
 ## Overview
 
-In this lab, you will use **Nmap** to identify an open port on the local machine (`localhost`).
+In this lab, I used Nmap to scan my local machine and find an unknown open port.
 
-You will start a dummy service on port `7777`, perform a full port scan, and save the scan output to a file. This lab helps you practice:
+I started a simple dummy service on port `7777` using Netcat, then used Nmap to scan all TCP ports on `localhost`. I also saved the scan result to a text file for documentation.
 
-- scanning a local host
-- scanning all ports
-- identifying an open port
-- saving Nmap output to a file
-- verifying scan results
+This lab helped me practice full port scanning, identifying open ports, and saving Nmap output.
 
----
+## Objective
 
-## Learning Objectives
+The goal of this lab was to:
 
-By the end of this lab, you should be able to:
+- Start a simple local listening service
+- Scan `localhost` with Nmap
+- Scan all TCP ports using the `-p-` option
+- Identify the open port
+- Save the scan result to a text file
+- Verify the result from the saved file
 
-- use Nmap to scan `localhost`
-- scan all ports with `-p-`
-- identify an open port from scan results
-- save scan output to a text file
-- verify the scan findings
+## Tools Used
 
----
+- Nmap
+- Netcat (`nc`)
+- Ubuntu / WSL terminal
 
-## Prerequisites
+## Scenario
 
-Before starting, make sure you have:
+A local test service is running on the machine, but the open port is unknown.
 
-- Ubuntu, WSL, or another Linux environment
-- `nmap` installed
-- `nc` (netcat) installed
+The task is to use Nmap to scan all TCP ports on `localhost`, identify the open port, and save the result for documentation.
 
-You can check with:
+This simulates a basic discovery task where a cybersecurity analyst checks which ports are open on a system.
+
+## Commands Used
+
+### 1. Check That Nmap Is Installed
 
 ```bash
 nmap --version
-nc -h
+```
+
+This command checks whether Nmap is installed and shows the installed version.
+
+If Nmap is not installed, it can be installed with:
+
+```bash
+sudo apt update
+sudo apt install nmap
 ```
 
 ---
 
-## Scenario
+### 2. Check That Netcat Is Installed
 
-A local test server is running on your machine, but the team does not know which port is open.
+```bash
+nc -h
+```
 
-Your task is to use Nmap to scan localhost, identify the open port, and save the output to a file for documentation.
+This command checks whether Netcat is available.
+
+If Netcat is not installed, it can be installed with:
+
+```bash
+sudo apt install netcat-openbsd
+```
 
 ---
 
-## Step 1: Start a dummy service on port 7777
-
-Run the following command:
+### 3. Start a Dummy Service on Port 7777
 
 ```bash
 while true; do nc -n -lvp 7777; done &
 ```
 
-This starts a local listening service on port `7777`.
+This command starts a simple local listening service on port `7777`.
+
+Explanation:
+
+- `while true` keeps the service running repeatedly
+- `nc` starts Netcat
+- `-n` disables DNS lookup
+- `-l` tells Netcat to listen for connections
+- `-v` enables verbose output
+- `-p 7777` sets the listening port to `7777`
+- `&` runs the command in the background
 
 ---
 
-## Step 2: Scan all ports on localhost
-
-Run:
+### 4. Scan All TCP Ports on Localhost
 
 ```bash
 nmap -p- localhost
 ```
 
-### Questions:
+This command scans all TCP ports on the local machine.
 
-- Is the host up?
-- Which port is open?
-- Why is `-p-` useful in this lab?
+The `-p-` option tells Nmap to scan all ports from `1` to `65535`.
 
 ---
----
 
-## Step 3: Save the scan output to a file
-
-Run:
+### 5. Save the Scan Output to a File
 
 ```bash
 nmap -p- localhost > localhost_full_scan.txt
 ```
 
-This saves the scan output into a text file.
+This command runs the full port scan again and saves the output to a file called `localhost_full_scan.txt`.
+
+Saving scan output is useful because it creates a record that can be reviewed later.
 
 ---
 
-## Step 4: View the saved file
-
-Run:
+### 6. View the Saved Scan Result
 
 ```bash
 cat localhost_full_scan.txt
 ```
 
-### Questions:
+This command displays the saved scan result in the terminal.
 
-- Does the file exist?
-- Does it contain the scan result?
-- Which port is marked as open?
+## Expected Result
 
----
+Nmap should show that `localhost` is up and that port `7777/tcp` is open.
 
-## Tasks
+Example result:
 
-Complete the following tasks:
-
-- Start a dummy service on port `7777`
-- Use Nmap to scan `localhost`
-- Scan all ports using `-p-`
-- Save the output to `localhost_full_scan.txt`
-- Confirm that port `7777` is open
-
----
-
-## Expected Results
-
-You should observe:
-
-- `localhost` is up
-- port `7777/tcp` is open
-- the scan output is saved in `localhost_full_scan.txt`
-
-Example output may look similar to:
-
-```
-Starting Nmap ...
-Nmap scan report for localhost
-Host is up (...)
-
+```text
 PORT     STATE SERVICE
 7777/tcp open  cbt
 ```
 
-The exact service name may vary slightly depending on your environment.
+The exact service name may be different depending on the system. The most important part is that port `7777/tcp` is shown as `open`.
 
----
+## Explanation of the Result
 
-## Notes
+The result means that a TCP service is listening on port `7777`.
 
-The command:
-
-```bash
-nmap -p- localhost
-```
-
-means:
-
-- `nmap` = run the network scanner
-- `-p-` = scan all ports
-- `localhost` = scan the local machine
-
-Saving output with:
+In this lab, the open port was created by the Netcat command:
 
 ```bash
-nmap -p- localhost > localhost_full_scan.txt
+while true; do nc -n -lvp 7777; done &
 ```
 
-is useful because it creates a record of the scan that can be reviewed later.
+Nmap detected the open port because the Netcat service was listening and accepting connections.
 
----
+## Screenshots
+
+### Netcat Dummy Service Running
+
+![Netcat Dummy Service Running](screenshots/01-netcat-dummy-service.png)
+
+### Nmap Full Port Scan Result
+
+![Nmap Full Port Scan Result](screenshots/02-nmap-full-port-scan.png)
+
+### Saved Scan Output File
+
+![Saved Scan Output File](screenshots/03-saved-scan-output.png)
 
 ## Key Terms
 
-- Nmap = a network scanning tool
-- localhost = your own machine
-- port = a numbered network entry point
-- open port = a port where a service is listening
-- dummy service = a simple test service used for practice
-- netcat (nc) = a command-line tool for listening on or connecting to ports
-- full port scan = scanning all available ports on a target host
+| Term | Meaning |
+|---|---|
+| `localhost` | The local machine being used |
+| `127.0.0.1` | Loopback IP address that points to the local machine |
+| Port | A communication endpoint used by a network service |
+| Open port | A port where a service is running and accepting connections |
+| TCP | Transmission Control Protocol, a common network communication protocol |
+| Nmap | A tool used for network scanning and service discovery |
+| Netcat / `nc` | A command-line tool used to create or connect to network services |
+| Dummy service | A simple test service used for practice |
+| `-p-` | Nmap option used to scan all ports |
+| `>` | A shell operator used to save command output to a file |
 
----
+## What I Learned
 
-## Hints
+In this lab, I learned how to use Netcat to start a simple listening service on a specific port.
 
-- Use the correct Nmap syntax to scan `localhost`
-- Use `-p-` to scan all ports
-- Check the saved output carefully to identify the open port
-- Make sure the dummy service is running before scanning
+I also learned how to use Nmap to scan all TCP ports on `localhost` with the `-p-` option. This helped me understand that a full port scan checks more ports than a default Nmap scan.
 
----
+I practiced saving scan results to a text file and verifying the result with the `cat` command.
 
-## Extension Ideas
+## Security Note
 
-After finishing this lab, try:
+This lab was performed only on `localhost`.
 
-```bash
-nmap localhost
-nmap -p 7777 localhost
-nmap -sV -p 7777 localhost
-```
+Nmap scans should only be performed on systems that I own or have permission to test. Unauthorized scanning can be illegal and unethical.
 
-These commands help you compare:
+## Conclusion
 
-- default scanning
-- scanning a specific port
-- service version detection
+This lab helped me understand how to find an open port when the port number is unknown.
 
----
+By starting a dummy service with Netcat and scanning all ports with Nmap, I was able to identify port `7777/tcp` as open and save the result for documentation.
