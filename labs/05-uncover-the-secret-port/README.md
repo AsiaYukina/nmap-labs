@@ -1,213 +1,159 @@
-# Lab 05: Uncover the Secret Port
+# Lab 05: Uncover the Secret Port with Nmap
 
 ## Overview
 
-In this lab, you will use **Nmap** to discover a hidden service running on `localhost`.
+In this lab, I used Nmap to find a hidden or unknown open port on `localhost`.
 
-A local service is listening on an unknown **5-digit port**, and your task is to find it by scanning all ports with increased verbosity. You will save the scan output to a text file and inspect the results to identify the correct port number.
+The purpose of this lab was to practice scanning all TCP ports instead of only scanning the default Nmap port range.
 
-This lab helps you practice:
+This is useful because some services may run on uncommon or high-numbered ports. A basic scan may miss them, but a full port scan can help identify them.
 
-- scanning all ports on a local host
-- using verbose output with Nmap
-- saving scan results to a file
-- identifying a specific open port from scan output
-- reviewing results from a command-line scan
+## Objective
 
----
+The goal of this lab was to:
 
-## Learning Objectives
+- Start a local service on a non-standard port
+- Scan `localhost` with Nmap
+- Use a full TCP port scan
+- Identify the secret open port
+- Understand why full port scanning can be useful
 
-By the end of this lab, you should be able to:
+## Tools Used
 
-- use Nmap to scan `localhost`
-- scan all ports with `-p-`
-- increase scan detail with `-v`
-- save Nmap output to a text file
-- identify an open 5-digit port from the saved results
-
----
-
-## Prerequisites
-
-Before starting, make sure you have:
-
-- Ubuntu, WSL, or another Linux environment
-- `nmap` installed
-- basic familiarity with reading command-line output
-- optional familiarity with `grep`
-
-You can check with:
-
-```bash
-nmap --version
-grep --version
-```
-
----
+- Nmap
+- Netcat (`nc`)
+- Ubuntu / WSL terminal
 
 ## Scenario
 
-A hidden local service is running on your machine, but you do not know which 5-digit port it is using.
+A service is running on a secret port, but the port number is not obvious from a normal scan.
 
-Your task is to perform a verbose full-port scan on localhost, save the results to a file, and find the open 5-digit port number.
+The task is to use Nmap to scan all TCP ports and discover which port is open.
 
----
+This simulates a basic reconnaissance task where a cybersecurity analyst or beginner pentester searches for services running on non-standard ports.
 
-## Step 1: Run a verbose full-port scan
+## Commands Used
 
-Run:
+### 1. Start a Secret Local Service
 
-```bash
-nmap -v -p- localhost
-```
-
-### Questions:
-
-- Why does this scan take longer than a default Nmap scan?
-- What does `-v` add to the output?
-- What does `-p-` do?
-
----
-
-## Step 2: Save the scan results to a file
-
-Run:
+I started a simple listening service using Netcat:
 
 ```bash
-nmap -v -p- localhost > scan_results.txt
+while true; do nc -n -lvp 9999; done &
 ```
 
-This saves the full scan output into `scan_results.txt`.
+This command starts a local service on port `9999`.
+
+Explanation:
+
+- `while true` keeps the command running repeatedly
+- `nc` starts Netcat
+- `-n` disables DNS lookup
+- `-l` makes Netcat listen for connections
+- `-v` enables verbose output
+- `-p 9999` sets the listening port to `9999`
+- `&` runs the command in the background
 
 ---
 
-## Step 3: View the saved file
-
-Run:
-
-```bash
-cat scan_results.txt
-```
-
-### Questions:
-
-- Does the file exist?
-- Can you find the open port in the results?
-- Is there exactly one open 5-digit port?
-
----
-
-## Step 4: Search for open ports in the file
-
-You can search more quickly with:
-
-```bash
-grep open scan_results.txt
-```
-
-This helps you locate the line that contains the open port.
-
----
-
-## Tasks
-
-Complete the following tasks:
-
-1. Run an Nmap scan against localhost
-2. Use `-v` to increase verbosity
-3. Use `-p-` to scan all ports
-4. Save the output to `scan_results.txt`
-5. Identify the open 5-digit port number
-
----
-
-## Expected Results
-
-You should observe:
-
-- `localhost` is up
-- Nmap scans all ports
-- the output is saved in `scan_results.txt`
-- one open 5-digit port appears in the results
-
-Example output may look similar to:
-
-```
-PORT      STATE SERVICE
-20621/tcp open  unknown
-```
-
-The exact port number will depend on your environment.
-
----
-
-## Notes
-
-The command:
-
-```bash
-nmap -v -p- localhost
-```
-
-means:
-
-- `nmap` = run the network scanner
-- `-v` = increase verbosity
-- `-p-` = scan all ports
-- `localhost` = scan the local machine
-
-The command:
-
-```bash
-nmap -v -p- localhost > scan_results.txt
-```
-
-does the same scan, but saves the output to a file for later review.
-
-This is useful when:
-
-- the scan output is long
-- you want to review results carefully
-- you need to document what was found
-
-## Key Terms
-
-- Nmap = a network scanning tool
-- verbosity = extra detail shown in command output
-- `-v` = Nmap option for verbose output
-- `-p-` = Nmap option to scan all ports
-- localhost = your own machine
-- open port = a port where a service is listening
-- 5-digit port = a port number between `10000` and `65535`
-
----
-
-## Hints
-
-- Use `-p-` to make sure all ports are scanned
-- Use `-v` if you want more detailed output
-- Save the scan to a file before searching through it
-- Use grep open `scan_results.txt` to find open ports faster
-- Look for a 5-digit number in the open port line
-
----
-
-## Extension Ideas
-
-After finishing this lab, try:
+### 2. Run a Basic Nmap Scan
 
 ```bash
 nmap localhost
-nmap -p 10000-65535 localhost
-nmap -sV -p- localhost
 ```
 
-These commands help you compare:
+This command runs a default Nmap scan against the local machine.
 
-- default scanning
-- scanning only the high port range
-- service version detection on all ports
+A default scan checks the most common ports, but it may not always show services running on unusual ports.
 
 ---
 
+### 3. Scan All TCP Ports
+
+```bash
+nmap -p- localhost
+```
+
+The `-p-` option tells Nmap to scan all TCP ports from `1` to `65535`.
+
+This is useful when the open port is unknown or when a service is running on a non-standard port.
+
+---
+
+### 4. Scan the Secret Port Directly
+
+After finding the open port, I scanned it directly:
+
+```bash
+nmap -p 9999 localhost
+```
+
+This command checks only port `9999`.
+
+## Expected Result
+
+Nmap should show that port `9999/tcp` is open.
+
+Example result:
+
+```text
+PORT     STATE SERVICE
+9999/tcp open  abyss
+```
+
+The exact service name may be different depending on the system. The most important result is that port `9999/tcp` appears as `open`.
+
+## Explanation of the Result
+
+The result means that a TCP service is listening on port `9999`.
+
+In this lab, the open port was created by the Netcat command:
+
+```bash
+while true; do nc -n -lvp 9999; done &
+```
+
+Nmap detected the port because the Netcat service was active and accepting connections.
+
+A full port scan was useful because the service was running on a non-standard port.
+
+## Screenshots
+
+### Secret Port Discovery with Nmap
+
+![Secret Port Discovery with Nmap](screenshots/01-secret-port-discovery.png)
+
+## Key Terms
+
+| Term | Meaning |
+|---|---|
+| Secret port | An open port that is not immediately obvious |
+| Open port | A port where a service is running and accepting connections |
+| Non-standard port | A port that is not commonly used for a specific service |
+| TCP | Transmission Control Protocol, a common network communication protocol |
+| Nmap | A tool used for network scanning and service discovery |
+| Netcat / `nc` | A command-line tool used to create or connect to network services |
+| `-p-` | Nmap option used to scan all TCP ports |
+| `-p` | Nmap option used to scan a specific port |
+| `localhost` | The local machine being used |
+| `127.0.0.1` | Loopback IP address that points to the local machine |
+
+## What I Learned
+
+In this lab, I learned that a default Nmap scan does not always show every possible open port.
+
+I practiced using the `-p-` option to scan all TCP ports. This helped me understand why full port scanning can be important during reconnaissance.
+
+I also learned how to use Netcat to create a simple listening service and then detect it with Nmap.
+
+## Security Note
+
+This lab was performed only on `localhost`.
+
+Nmap scans should only be performed on systems that I own or have permission to test. Unauthorized scanning can be illegal and unethical.
+
+## Conclusion
+
+This lab helped me understand how to discover an unknown or hidden open port with Nmap.
+
+By starting a local service on port `9999` and scanning all TCP ports, I was able to identify the secret open port and confirm it with a targeted scan.
